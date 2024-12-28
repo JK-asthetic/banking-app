@@ -1,15 +1,17 @@
 import HeaderBox from "@/components/HeaderBox";
 import RightSidebar from "@/components/RightSidebar";
 import TotalBalanceBox from "@/components/TotalBalanceBox";
-import React from "react";
+import { createClient } from "@/utils/supabase/server";
+import { console } from "inspector";
+import { redirect, RedirectType } from "next/navigation";
+import React, { use } from "react";
 
-const Home = () => {
-  const loggin = {
-    firstName: "Jatin",
-    lastName: "Khetan",
-    email: "khetanjatin12@gmail.com",
-  };
+async function Home() {
+  const supabase = await createClient();
+  const { data, error } = await supabase.auth.getUser();
 
+
+  const loggin = data.user;
   return (
     <section className="home">
       <div className="home-content">
@@ -17,7 +19,7 @@ const Home = () => {
           <HeaderBox
             type="greeting"
             title="Welcome"
-            user={loggin?.firstName || "Guest"}
+            user={loggin?.user_metadata.first_name || "Guest"}
             subtext="Access and manage your bankAccount here"
           />
 
@@ -32,6 +34,6 @@ const Home = () => {
       <RightSidebar user={loggin} transactions={[]} banks={[{}, {}]} />
     </section>
   );
-};
+}
 
 export default Home;

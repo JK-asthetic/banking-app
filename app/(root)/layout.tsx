@@ -1,13 +1,17 @@
 import MobileNavbar from "@/components/MobileNavbar";
 import SideBar from "@/components/SideBar";
+import { createClient } from "@/utils/supabase/server";
 import Image from "next/image";
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const LoggedIn = { firstName: "Jatin", lastName: "Khetan" };
+  const supabase = await createClient();
+  const { data, error } = await supabase.auth.getUser();
+
+  const LoggedIn = data.user;
   return (
     <main className="flex h-screen w-full font-inter ">
       <SideBar user={LoggedIn} />
